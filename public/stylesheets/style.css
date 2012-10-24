@@ -811,3 +811,7 @@ dd {
     page-break-after: avoid;
   }
 }
+
+p.p_json {
+  display: none;
+}

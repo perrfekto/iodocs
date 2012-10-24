@@ -4,6 +4,8 @@ h1=apiInfo.name
 - else
     - var authed =''
 
+- var tst = {}
+
 
 form#credentials
     input(type='hidden', name='apiName', value=apiName)
@@ -140,7 +142,7 @@ ul
                                                                   dt #{choice}
                                                                   dd #{description}
                             - if (method.body && method.body.length > 0)
-                                table.parameters
+                                table(id='tbl.' + endpoint.name + '.' + method.MethodName + '.body').parameters
                                     thead
                                         tr
                                             th Item
@@ -149,8 +151,10 @@ ul
                                             th Description
                                     tbody
                                         - var itemCount =0
+                                        - var fullName = ''
                                         - each item in method.body
                                             - itemCount++
+                                            - fullName = endpoint.name + '.' + method.MethodName + '.' + item.Name
                                             div(id='reqbody' + itemCount)
                                               - if (item.Required =='Y')
                                                   - var required =true
@@ -158,7 +162,7 @@ ul
                                               - else
                                                   - var required =false
                                                   - var className =''
-                                              tr(class=className)
+                                              tr(data-item=fullName, class=className)
                                                   td.name=item.Name
                                                   td.parameter
                                                       - if (item.Type =='enumerated')
@@ -181,6 +185,9 @@ ul
                                                                            option(value=choice) #{choice}
                                                       - else if (item.Type =='textarea')
                                                           textarea(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className, cols='40', rows='3')
+                                                      - else if (item.Type == 'array')
+                                                          a(data-item=fullName, data-row=itemCount, data-num='0').addItems ++
+                                                          - Object.defineProperty (tst, endpoint.name + '.' + method.MethodName + '.' + item.Name, {enumerable:true, value:item.ArrayItems});
                                                       - else
                                                           input(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className)
                                                   td.type=item.Type
@@ -218,3 +225,6 @@ ul
                                     // Create header fields and button to add/remove headers.
                             - if (!method['read-only'])
                                 input(type='submit', id=method.MethodName, value='Try it!')
+
+- var str = JSON.stringify(tst);
+p(id='p_json').p_json=str
