@@ -16,28 +16,38 @@ form#credentials
              h2 API Credentials
                img(src='/images/key.png')
 
-             - if (apiInfo.oauth)
-                 input(type='hidden', name='oauth', value='authrequired')
-
-             - if (apiInfo.auth.defaultKey)
-                 - var defaultKey =apiInfo.auth.defaultKey
-             - else
-                 - var defaultKey =''
-
-             - if (apiInfo.auth.defaultSecret)
-                 - var defaultSecret =apiInfo.auth.defaultSecret
-             - else
-                 - var defaultSecret =''
-             div
-                 label(for='key') API Key
-                 input(id='key', name='key', value=defaultKey, style='color=#EEEEEE')
-             div
-                 - if (apiInfo.oauth || apiInfo.signature)
-                     label(for='secret') Shared Secret
-                     input(id='secret', name='secret', value=defaultSecret, style='color=#EEEEEE')
-             - if (apiInfo.oauth && apiInfo.oauth.type !='two-legged')
+             - if(apiInfo.auth == 'basicAuth')
+                 div (basic HTTP authorization)
+                 br
                  div
-                    input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth')
+                     label(for='key') Username
+                     input(id='username', name='username', style='color=#EEEEEE')
+                 div
+                     label(for='key') Password
+                     input(id='password', name='password', value=defaultKey, style='color=#EEEEEE')
+             - else
+               - if (apiInfo.oauth)
+                   input(type='hidden', name='oauth', value='authrequired')
+
+               - if (apiInfo.auth.defaultKey)
+                   - var defaultKey =apiInfo.auth.defaultKey
+               - else
+                   - var defaultKey =''
+
+               - if (apiInfo.auth.defaultSecret)
+                   - var defaultSecret =apiInfo.auth.defaultSecret
+               - else
+                   - var defaultSecret =''
+               div
+                   label(for='key') API Key
+                   input(id='key', name='key', value=defaultKey, style='color=#EEEEEE')
+               div
+                   - if (apiInfo.oauth || apiInfo.signature)
+                       label(for='secret') Shared Secret
+                       input(id='secret', name='secret', value=defaultSecret, style='color=#EEEEEE')
+               - if (apiInfo.oauth && apiInfo.oauth.type !='two-legged')
+                   div
+                      input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth')
 
 div(id='controls')
     ul
@@ -117,6 +127,8 @@ ul
                                                                            option(value=choice, selected=true) #{choice}
                                                                    - else
                                                                            option(value=choice) #{choice}
+                                                      - else if (parameter.Type =='textarea')
+                                                          textarea(name='params[' + parameter.Name + ']', value=parameter.Default, placeholder=className, cols='40', rows='3')
                                                       - else
                                                           input(name='params[' + parameter.Name + ']', value=parameter.Default, placeholder=className)
                                                   td.type=parameter.Type
@@ -125,6 +137,58 @@ ul
                                                       - if (parameter.Type =='enumerated' && parameter.EnumeratedDescription)
                                                           dl.clearfix
                                                               - each description, choice in parameter.EnumeratedDescription
+                                                                  dt #{choice}
+                                                                  dd #{description}
+                            - if (method.body && method.body.length > 0)
+                                table.parameters
+                                    thead
+                                        tr
+                                            th Item
+                                            th Value
+                                            th Type
+                                            th Description
+                                    tbody
+                                        - var itemCount =0
+                                        - each item in method.body
+                                            - itemCount++
+                                            div(id='reqbody' + itemCount)
+                                              - if (item.Required =='Y')
+                                                  - var required =true
+                                                  - var className ='required'
+                                              - else
+                                                  - var required =false
+                                                  - var className =''
+                                              tr(class=className)
+                                                  td.name=item.Name
+                                                  td.parameter
+                                                      - if (item.Type =='enumerated')
+                                                          select(name='reqbody[' + item.Name + ']', placeholder=className)
+                                                            - if (item.Default =='')
+                                                                option(value='') 
+                                                            - each choice in item.EnumeratedList
+                                                                - if (item.Default ==choice)
+                                                                        option(value=choice, selected=true) #{choice}
+                                                                - else
+                                                                        option(value=choice) #{choice}
+                                                      - else if (item.Type =='boolean')
+                                                           select(name='reqbody[' + item.Name + ']', placeholder=className)
+                                                                - if (item.Default =='')
+                                                                        option(value='') 
+                                                                - each choice in [apiInfo.booleanTrueVal,apiInfo.booleanFalseVal]
+                                                                   - if (item.Default ==choice)
+                                                                           option(value=choice, selected=true) #{choice}
+                                                                   - else
+                                                                           option(value=choice) #{choice}
+                                                      - else if (item.Type =='textarea')
+                                                          textarea(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className, cols='40', rows='3')
+                                                      - else
+                                                          input(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className)
+                                                  td.type=item.Type
+                                                  td.description
+                                                      p=item.Description || 'No description'
+                                                      - if (item.Type =='enumerated' && item.EnumeratedDescription)
+                                                          dl.clearfix
+                                                              - each description, choice in item.EnumeratedDescription
                                                                   dt #{choice}
                                                                   dd #{description}
                             - if (method.headers && method.headers.length > 0)

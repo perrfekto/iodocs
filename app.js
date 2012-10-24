@@ -209,6 +209,7 @@ function oauthSuccess(req, res, next) {
         console.log('apiName: ' + apiName);
         console.log('key: ' + key);
         console.log(util.inspect(req.params));
+        console.log(util.inspect(req.reqbody));
     };
 
     db.mget([
@@ -277,6 +278,7 @@ function processRequest(req, res, next) {
 
     var reqQuery = req.body,
         params = reqQuery.params || {},
+        items = reqQuery.reqbody || {},
         methodURL = reqQuery.methodUri,
         httpMethod = reqQuery.httpMethod,
         apiKey = reqQuery.apiKey,
@@ -319,7 +321,12 @@ function processRequest(req, res, next) {
         };
 
     if (['POST','DELETE','PUT'].indexOf(httpMethod) !== -1) {
-        var requestBody = query.stringify(params);
+        if (apiConfig.contentType && apiConfig.contentType.toLowerCase() == "json") {
+          requestBody = JSON.stringify(items);
+        }
+        else {
+          requestBody = JSON.stringify(items);
+        }
     }
 
     if (apiConfig.oauth) {
@@ -472,9 +479,9 @@ function processRequest(req, res, next) {
     function unsecuredCall() {
         console.log('Unsecured Call');
 
-        if (['POST','PUT','DELETE'].indexOf(httpMethod) === -1) {
+// params and body split        if (['POST','PUT','DELETE'].indexOf(httpMethod) === -1) {
             options.path += ((paramString.length > 0) ? '?' + paramString : "");
-        }
+//        }
 
         // Add API Key to params, if any.
         if (apiKey != '' && apiKey != 'undefined' && apiKey != undefined) {
@@ -485,6 +492,10 @@ function processRequest(req, res, next) {
                 options.path += '?';
             }
             options.path += apiConfig.keyParam + '=' + apiKey;
+        }
+
+        if (apiConfig.auth=='basicAuth') {
+        	options.headers['Authorization']='Basic '+new Buffer(reqQuery.apiUsername+':'+reqQuery.apiPassword).toString('base64');
         }
 
         // Perform signature routine, if any.
@@ -532,7 +543,13 @@ function processRequest(req, res, next) {
         }
 
         if (requestBody) {
-            options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            if (apiConfig.contentType && apiConfig.contentType.toLowerCase() == "json") {
+              options.headers['Content-Type'] = 'application/json';
+              options.body = requestBody;
+            }
+            else {
+              options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            }
         }
 
         if (config.debug) {
