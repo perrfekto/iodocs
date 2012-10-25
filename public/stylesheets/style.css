@@ -815,3 +815,13 @@ dd {
 p.p_json {
   display: none;
 }
+
+tr.indent1head td {
+  padding-left: 2em;
+  color: blue;
+}
+
+tr.indent1 td {
+  padding-left: 4em;
+}
+

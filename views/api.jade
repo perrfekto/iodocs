@@ -186,7 +186,7 @@ ul
                                                       - else if (item.Type =='textarea')
                                                           textarea(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className, cols='40', rows='3')
                                                       - else if (item.Type == 'array')
-                                                          a(data-item=fullName, data-row=itemCount, data-num='0').addItems ++
+                                                          a(id='addItems.' + endpoint.name + '.' + method.MethodName + '.' + item.Name, data-item=fullName, data-row=itemCount, data-num='0', data-numItems=item.ArrayItems.length).addItems ++
                                                           - Object.defineProperty (tst, endpoint.name + '.' + method.MethodName + '.' + item.Name, {enumerable:true, value:item.ArrayItems});
                                                       - else
                                                           input(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className)
