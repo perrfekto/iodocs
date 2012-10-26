@@ -825,3 +825,12 @@ tr.indent1 td {
   padding-left: 4em;
 }
 
+tr.indent2head td {
+  padding-left: 6em;
+  color: blue;
+}
+
+tr.indent2 td {
+  padding-left: 8em;
+}
+

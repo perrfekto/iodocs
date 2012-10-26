@@ -327,6 +327,7 @@ function processRequest(req, res, next) {
         else {
           requestBody = JSON.stringify(items);
         }
+console.log('...' + requestBody);
     }
 
     if (apiConfig.oauth) {

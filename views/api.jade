@@ -3,8 +3,8 @@ h1=apiInfo.name
     - var authed ='authed'
 - else
     - var authed =''
-
-- var tst = {}
+- var pjson = {}
+- var tst = []
 
 
 form#credentials
@@ -162,7 +162,7 @@ ul
                                               - else
                                                   - var required =false
                                                   - var className =''
-                                              tr(data-item=fullName, class=className)
+                                              tr(id='tr_' + fullName + '.', data-item=fullName, class=className)
                                                   td.name=item.Name
                                                   td.parameter
                                                       - if (item.Type =='enumerated')
@@ -186,8 +186,19 @@ ul
                                                       - else if (item.Type =='textarea')
                                                           textarea(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className, cols='40', rows='3')
                                                       - else if (item.Type == 'array')
-                                                          a(id='addItems.' + endpoint.name + '.' + method.MethodName + '.' + item.Name, data-item=fullName, data-row=itemCount, data-num='0', data-numItems=item.ArrayItems.length).addItems ++
-                                                          - Object.defineProperty (tst, endpoint.name + '.' + method.MethodName + '.' + item.Name, {enumerable:true, value:item.ArrayItems});
+                                                          input(type='button', value='+', id='addItems.' + fullName + '.', data-item=fullName, data-num='0', data-nxtrow=itemCount, data-numItems=item.ArrayItems.length, data-level='0', data-parentid='').addItems
+                                                          - var curIndex = endpoint.name + '.' + method.MethodName + '.' + item.Name
+                                                          - Object.defineProperty (pjson, curIndex, {enumerable:true, value:item.ArrayItems});
+                                                          - tst.push (curIndex)
+                                                          - var curItem = ''
+                                                          - while (tst.length > 0)
+                                                              - curItem = tst.shift()
+                                                              - if (pjson.hasOwnProperty (curItem))
+                                                                  - each arrItem in pjson[curItem]
+                                                                      - if (arrItem.Type == 'array')
+                                                                          - curIndex = curItem + '.' + arrItem.Name
+                                                                          - Object.defineProperty (pjson, curIndex, {enumerable:true, value:arrItem.ArrayItems});
+                                                                          - tst.push (curIndex)
                                                       - else
                                                           input(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className)
                                                   td.type=item.Type
@@ -226,5 +237,8 @@ ul
                             - if (!method['read-only'])
                                 input(type='submit', id=method.MethodName, value='Try it!')
 
-- var str = JSON.stringify(tst);
+
+
+
+- var str = JSON.stringify(pjson);
 p(id='p_json').p_json=str
