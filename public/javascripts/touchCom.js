@@ -1,6 +1,7 @@
 var typesArray;
 
 function addRow (obj, idPre, namePre, nameItem, numEl, level, nxtRow, parentId) {
+  var re =/[\s\.]/g;
   if (obj.hasOwnProperty ('Name')) {
     var name = obj.Name;
   }
@@ -8,7 +9,7 @@ function addRow (obj, idPre, namePre, nameItem, numEl, level, nxtRow, parentId) 
     var name = '';
   }
 
-  var trStr = '<tr id="tr_' + idPre + '.' + name + '." class="indent' + level;
+  var trStr = '<tr id="tr_' + idPre + '.' + name.replace (re, '') + '." class="indent' + level;
   if (obj.hasOwnProperty ('Required') && obj.Required.toLowerCase() == 'y') {
     trStr += ' required';
   }
@@ -52,7 +53,7 @@ function addRow (obj, idPre, namePre, nameItem, numEl, level, nxtRow, parentId) 
       numItems = typesArray[idx].length;
     }
 
-    trStr += '<input type="button" value="+" id="addItems.' + idPre + '.' + name + '." data-item="' + idx + '" data-num="0" data-level="' + level + 
+    trStr += '<input type="button" value="+" id="addItems.' + idPre + '.' + name.replace (re, '') + '." data-item="' + idx + '" data-num="0" data-level="' + level + 
                 '" data-numItems="' + numItems + '" data-nxtrow="' + nxtRow + '" data-parentid="' + parentId + '" class="addItems"/>';
   }
 

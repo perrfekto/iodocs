@@ -51,5 +51,14 @@
              "version": "1.0",
              "crypt": "HMAC-SHA1"
         }
+    },
+    "testarray": {
+        "name": "Test array API",
+         "protocol": "http",
+         "baseURL": "192.168.1.193",
+         "publicPath": "",
+         "auth": "key",
+         "keyParam": "api_key",
+         "contentType":"json"
     }
 }

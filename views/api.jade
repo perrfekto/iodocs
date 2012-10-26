@@ -142,7 +142,9 @@ ul
                                                                   dt #{choice}
                                                                   dd #{description}
                             - if (method.body && method.body.length > 0)
-                                table(id='tbl.' + endpoint.name + '.' + method.MethodName + '.body').parameters
+                                - var re = /[\s\.]/g;
+
+                                table(id='tbl.' + endpoint.name.replace (re, '') + '.' + method.MethodName.replace (re, '') + '.body').parameters
                                     thead
                                         tr
                                             th Item
@@ -154,7 +156,7 @@ ul
                                         - var fullName = ''
                                         - each item in method.body
                                             - itemCount++
-                                            - fullName = endpoint.name + '.' + method.MethodName + '.' + item.Name
+                                            - fullName = endpoint.name.replace (re, '') + '.' + method.MethodName.replace (re, '') + '.' + item.Name.replace (re, '')
                                             div(id='reqbody' + itemCount)
                                               - if (item.Required =='Y')
                                                   - var required =true
@@ -187,7 +189,7 @@ ul
                                                           textarea(name='reqbody[' + item.Name + ']', value=item.Default, placeholder=className, cols='40', rows='3')
                                                       - else if (item.Type == 'array')
                                                           input(type='button', value='+', id='addItems.' + fullName + '.', data-item=fullName, data-num='0', data-nxtrow=itemCount, data-numItems=item.ArrayItems.length, data-level='0', data-parentid='').addItems
-                                                          - var curIndex = endpoint.name + '.' + method.MethodName + '.' + item.Name
+                                                          - var curIndex = endpoint.name.replace (re, '') + '.' + method.MethodName.replace (re, '') + '.' + item.Name.replace (re, '')
                                                           - Object.defineProperty (pjson, curIndex, {enumerable:true, value:item.ArrayItems});
                                                           - tst.push (curIndex)
                                                           - var curItem = ''
