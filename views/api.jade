@@ -89,7 +89,7 @@ ul
                             span.description #{method.Synopsis}
                             br
                             br
-                            - if (method.parameters.length > 0)
+                            - if (method.parameters && method.parameters.length > 0)
                                 table.parameters
                                     thead
                                         tr

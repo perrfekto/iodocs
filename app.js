@@ -285,7 +285,8 @@ function processRequest(req, res, next) {
         apiSecret = reqQuery.apiSecret,
         apiName = reqQuery.apiName
         apiConfig = apisConfig[apiName],
-        key = req.sessionID + ':' + apiName;
+        key = req.sessionID + ':' + apiName,
+        requestBody = false;
 
     // Replace placeholders in the methodURL with matching params
     for (var param in params) {
@@ -327,7 +328,6 @@ function processRequest(req, res, next) {
         else {
           requestBody = JSON.stringify(items);
         }
-console.log('...' + requestBody);
     }
 
     if (apiConfig.oauth) {
@@ -535,7 +535,7 @@ console.log('...' + requestBody);
         }
 
         if (!options.headers['Content-Length']) {
-            if (requestBody) {
+            if (requestBody !== false) {
                 options.headers['Content-Length'] = requestBody.length;
             }
             else {
@@ -543,7 +543,7 @@ console.log('...' + requestBody);
             }
         }
 
-        if (requestBody) {
+        if (requestBody !== false ) {
             if (apiConfig.contentType && apiConfig.contentType.toLowerCase() == "json") {
               options.headers['Content-Type'] = 'application/json';
               options.body = requestBody;
@@ -620,7 +620,7 @@ console.log('...' + requestBody);
             };
         });
 
-        if (requestBody) {
+        if (requestBody !== false) {
             apiCall.end(requestBody, 'utf-8');
         }
         else {

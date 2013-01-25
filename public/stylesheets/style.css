@@ -278,7 +278,7 @@ html {
 }
 
 body {
-  width: 960px;
+  width: 90%;
   margin: 15px auto;
   padding-bottom: 20px;
 }
@@ -814,6 +814,32 @@ dd {
 
 p.p_json {
   display: none;
+}
+
+td.parameter input {
+  width: 95%;
+}
+
+td.parameter input.addItems,
+td.parameter input.delItems {
+  width: 1em;
+}
+
+td.name {
+  width: 15%;
+}
+
+td.value {
+  width: 35%;
+}
+
+td.type {
+  width: 15%;
+  padding-left: 2em;
+}
+
+td.description {
+  width: 35%;
 }
 
 tr.indent1head td {
